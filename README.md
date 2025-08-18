@@ -9,26 +9,26 @@
   <a href="#examples"><b>Examples</b></a> |
 </p>
 
-**🚀 chimera is a multi-LLM serving system that achieves >2× cost savings and 3.3× more SLO attainment through flexible GPU sharing.**
+**🚀 Chimera is a multi-LLM serving system that achieves >2× cost savings and 3.3× more SLO attainment through flexible GPU sharing.**
 
 ## About
 
 Serving multiple large language models (LLMs) raises cost and performance challenges. Today's systems usually dedicate one or a group of GPUs to a specific model, leading to low GPU utilization.
 
 
-chimera tackles this challenge through flexible GPU sharing, enabling multiple models to share one or more GPUs via time-sharing or space-sharing. To meet latency service-level objectives (SLOs), it employs a scheduling algorithm that dynamically adjusts the sharing policy based on runtime workload patterns. Compared to existing systems, chimera delivers over 2× cost savings and a 3.3× improvement in SLO attainment.
+Chimera tackles this challenge through flexible GPU sharing, enabling multiple models to share one or more GPUs via time-sharing or space-sharing. To meet latency service-level objectives (SLOs), it employs a scheduling algorithm that dynamically adjusts the sharing policy based on runtime workload patterns. Compared to existing systems, Chimera delivers over 2× cost savings and a 3.3× improvement in SLO attainment.
 
 
-chimera implements its system on top of [SGLang](https://github.com/sgl-project/sglang).
+Chimera implements its system on top of [SGLang](https://github.com/sgl-project/sglang).
 
 
 ### Core Innovations
 
-chimera introduces two fundamental innovations:
+Chimera introduces two fundamental innovations:
 
 **🔧 Flexible Cross-Model Memory Coordination**
 - **On-demand memory allocation**: We decouple virtual and physical GPU memory allocation, enabling dynamic memory redistribution across models without engine modifications.
-- **Fast model activation**: chimera supports warm-start through pre-initialized SGLang engines. It also supports parallel model weight loading. Together, this reduces the model activation time (tested 1B to 70B) to <1.5s.
+- **Fast model activation**: Chimera supports warm-start through pre-initialized SGLang engines. It also supports parallel model weight loading. Together, this reduces the model activation time (tested 1B to 70B) to <1.5s.
 
 **📊 Two-Level Demand-Aware Scheduling**
 - **Global scheduler**: Smart model placement across GPUs to balance the load for better performance.
@@ -37,13 +37,13 @@ chimera introduces two fundamental innovations:
 
 ## Architecture
 
-chimera enhances SGLang with flexible GPU sharing capabilities through a unified multi-component architecture:
+Chimera enhances SGLang with flexible GPU sharing capabilities through a unified multi-component architecture:
 
-![chimera Architecture](pic/chimera_overview.png)
+![Chimera Architecture](pic/chimera_overview.png)
 
 ## Project Structure
 
-chimera extends SGLang with comprehensive multi-model serving capabilities. The key modifications include:
+Chimera extends SGLang with comprehensive multi-model serving capabilities. The key modifications include:
 
 <details>
 <summary><b> Multi-LLM Serving with Two-Level Workload-aware Scheduling </b></summary>
@@ -100,7 +100,7 @@ For detailed installation instructions and benchmarking setup, please refer to [
 
 ## Examples
 
-chimera offers three deployment modes, each building upon the previous with enhanced capabilities:
+Chimera offers three deployment modes, each building upon the previous with enhanced capabilities:
 
 <details>
 <summary><b> Colocate LLMs with Static Memory Allocation</b></summary>
@@ -139,7 +139,7 @@ python3 benchmark.py \
 <details>
 <summary><b> Colocate LLMs with Elastic Memory Allocation</b></summary>
 
-Launch server with chimera's elastic memory management:
+Launch server with Chimera's elastic memory management:
 
 ```bash
 # Start server with elastic emm
@@ -170,12 +170,12 @@ python3 benchmark.py \
 </details>
 
 <details>
-<summary><b> Flexible Time and Space Sharing (Full chimera)</b></summary>
+<summary><b> Flexible Time and Space Sharing (Full Chimera)</b></summary>
 
-Launch server with complete chimera system:
+Launch server with complete Chimera system:
 
 ```bash
-# Start server with full chimera capabilities
+# Start server with full Chimera capabilities
 python3 -m sglang.launch_multi_model_server \
   --model-config-file ./model_configs/8_gpu_18_model_our.json \
   --port 30002 \
@@ -217,7 +217,7 @@ python3 benchmark.py \
 <details>
 <summary><b> Model placement configuration </b></summary>
 
-chimera launches LLMs based on an initial placement file. The placement file is a JSON file that specifies the model name, model path, and the GPU IDs on which the model should be placed.
+Chimera launches LLMs based on an initial placement file. The placement file is a JSON file that specifies the model name, model path, and the GPU IDs on which the model should be placed.
 
 Below are some examples of the initial model placements.
 
