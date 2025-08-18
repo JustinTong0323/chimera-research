@@ -1,0 +1,77 @@
+#!/bin/bash
+set -x
+
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+ENGINE_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
+EMM_DIR=$(cd "$ENGINE_DIR/.." && pwd)
+
+check_uv() {
+    if ! command -v uv &> /dev/null; then
+        echo "Error: uv is not installed"
+        echo "Please install uv first, e.g., 'curl -LsSf https://astral.sh/uv/install.sh | sh'"
+        exit 1
+    fi
+}
+
+install_requirements() {
+    pushd "$EMM_DIR"
+    uv pip install -r requirements.txt
+    popd
+}
+
+setup_vllm() {
+    pushd "$ENGINE_DIR"
+
+    git clone -b v0.8.4 https://github.com/vllm-project/vllm.git vllm-v0.8.4
+    cd vllm-v0.8.4
+
+    uv venv --python=python3.11
+    source .venv/bin/activate
+    uv pip install --upgrade pip
+
+    # Install requirements for emm first to avoid overwriting vLLM's requirements
+    install_requirements
+
+    VLLM_USE_PRECOMPILED=1 uv pip install --editable .
+    git apply "$SCRIPT_DIR/emm-vllm-v0.8.4.patch"
+
+    # Install emm after installing VLLM to find the correct torch version
+    pushd "$EMM_DIR"
+    uv pip install -e . --no-build-isolation
+    popd
+
+    deactivate
+    popd
+}
+
+setup_sgl() {
+    pushd "$ENGINE_DIR"
+
+    git clone -b v0.4.6.post2 https://github.com/sgl-project/sglang.git sglang-v0.4.6.post2
+    cd sglang-v0.4.6.post2
+
+    uv venv --python=python3.11
+    source .venv/bin/activate
+    uv pip install --upgrade pip
+
+    # Install requirements for emm first to avoid overwriting sglang's requirements
+    install_requirements
+
+    uv pip install -e "python[all]"
+    git apply "$SCRIPT_DIR/emm-sglang-v0.4.6.post2.patch"
+
+    # Install emm after install sglang to find the correct torch version
+    pushd "$EMM_DIR"
+    uv pip install -e . --no-build-isolation
+    popd
+
+
+    deactivate
+    popd
+}
+
+# Check for uv before proceeding
+check_uv
+
+setup_vllm
+setup_sgl
