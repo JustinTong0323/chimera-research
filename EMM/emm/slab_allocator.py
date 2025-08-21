@@ -574,9 +574,9 @@ class KVCacheManager:
 
     def free(self, indices: List[int]):
         if self.reserved_blocks:
-            for idx in indices:
-                if idx in self.reserved_blocks:
-                    self.reserved_blocks.remove(idx)
+            idx_set = set(indices)
+            self.reserved_blocks = [x for x in self.reserved_blocks
+                                    if x not in idx_set]
 
         idx_dict = defaultdict(list)
         for idx in indices:
